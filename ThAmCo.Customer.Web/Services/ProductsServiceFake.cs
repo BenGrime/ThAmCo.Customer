@@ -19,7 +19,7 @@ namespace ThAmCo.Customer.Web.Services
             new ProductDto { Id = 6,  Name = "Iron Man Armor", Description = "Advanced suit tech from Stark Industries", Cost = 999.99 },
             new ProductDto { Id = 7,  Name = "Captain America Shield", Description = "Virtually indestructible shield made of Vibranium", Cost = 499.99 },
             new ProductDto { Id = 8,  Name = "Mjolnir Hammer", Description = "Thor's enchanted hammer, for the worthy", Cost = 899.00 },
-            new ProductDto { Id = 9,  Name = "Black Panther Suit", Description = "High-tech protective suit of Wakandan design", Cost = 1200.00 },
+            new ProductDto { Id = 9,  Name = "Black Panther Suit", Description = "High-tech protective suit of Wakandan design", Cost = 1201.00 },
             new ProductDto { Id = 10, Name = "Hawkeye Bow", Description = "Precision bow with custom features", Cost = 250.50 },
             new ProductDto { Id = 11, Name = "Web-Shooters", Description = "Spider-Man's wrist-mounted web-slinging devices", Cost = 79.99 },
             new ProductDto { Id = 12, Name = "Infinity Gauntlet", Description = "A powerful gauntlet that holds six Infinity Stones", Cost = 3000.00 },
