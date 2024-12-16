@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "dgSpecHash": "WGXB7Zs1sfIg+Rk/Iupdrvat4X/6lgWWKVj2vyfk5AkPtAI2Q10/O4WqP3wbPZMR1IQHxdE98iGeoNgTUHvtWg==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\ben1g\\OneDrive - Teesside University\\Year 3\\DevOps\\ICA attempt 5\\ThAmCo-Web\\ThAmCo.Customer.Web.Tests\\ThAmCo.Customer.Web.Tests.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\ben1g\\.nuget\\packages\\coverlet.collector\\6.0.0\\coverlet.collector.6.0.0.nupkg.sha512",
+    "C:\\Users\\ben1g\\.nuget\\packages\\microsoft.codecoverage\\17.6.0\\microsoft.codecoverage.17.6.0.nupkg.sha512",
+    "C:\\Users\\ben1g\\.nuget\\packages\\microsoft.net.test.sdk\\17.6.0\\microsoft.net.test.sdk.17.6.0.nupkg.sha512",
+    "C:\\Users\\ben1g\\.nuget\\packages\\microsoft.testplatform.objectmodel\\17.6.0\\microsoft.testplatform.objectmodel.17.6.0.nupkg.sha512",
+    "C:\\Users\\ben1g\\.nuget\\packages\\microsoft.testplatform.testhost\\17.6.0\\microsoft.testplatform.testhost.17.6.0.nupkg.sha512",
+    "C:\\Users\\ben1g\\.nuget\\packages\\mstest.testadapter\\3.0.4\\mstest.testadapter.3.0.4.nupkg.sha512",
+    "C:\\Users\\ben1g\\.nuget\\packages\\mstest.testframework\\3.0.4\\mstest.testframework.3.0.4.nupkg.sha512",
+    "C:\\Users\\ben1g\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512",
+    "C:\\Users\\ben1g\\.nuget\\packages\\nuget.frameworks\\5.11.0\\nuget.frameworks.5.11.0.nupkg.sha512",
+    "C:\\Users\\ben1g\\.nuget\\packages\\system.reflection.metadata\\1.6.0\\system.reflection.metadata.1.6.0.nupkg.sha512"
+  ],
+  "logs": []
+}
