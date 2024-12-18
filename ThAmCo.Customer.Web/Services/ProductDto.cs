@@ -4,12 +4,22 @@ namespace ThAmCo.Customer.Web.Services
 {
     public class ProductDto
     {
-        public required int Id {get; set;}
+        public int BrandId { get; set; }
 
-        public required String Name {get; set;}
+        public string?BrandName { get; set; }
 
-        public required String Description  {get; set;}
+        public int CategoryId { get; set; }
 
-        public required double Cost {get; set;}
+        public string? CategoryName { get; set; }
+
+        public string? Description { get; set; }
+
+        public int Id { get; set; }
+
+        public string? Name { get; set; }
+
+        public Boolean inStock { get; set; }
+
+        public double price { get; set; }
     }
 }

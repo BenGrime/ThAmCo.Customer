@@ -6,63 +6,61 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using ThAmCo.Customer.Web.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace ThAmCo.Customer.Web.Controllers;
-
+// [Authorize]
 public class ProductsController : Controller
 {
-    private readonly ILogger _logger;
-    private readonly IProductService _productService;
+    private readonly ILogger<ProductsController> _logger;
+        private readonly IProductService _productService;
 
-    public ProductsController(ILogger<ProductsController> logger, IProductService productsService)
-    {
-        _logger = logger;
-        _productService = productsService;
-    }
-    
-    // GET: /products/
-    public async Task<IActionResult> Index([FromQuery] string? subject)
-    {
-        if (!ModelState.IsValid)
+        public ProductsController(ILogger<ProductsController> logger, IProductService productService)
         {
-            return BadRequest(ModelState);
+            _logger = logger;
+            _productService = productService;
         }
-        IEnumerable<ProductDto> products = null!;
-        try
-        {
-            products = await _productService.GetProductsAsync();
-        }
-        catch
-        {
-            _logger.LogWarning("Exception occurred using products service.");
-            products = Array.Empty<ProductDto>();
-        }
-        return View(products.ToList());
 
-    }
-
-
-    // GET: /products/details/{id}
-    public async Task<IActionResult> Details(int? id)
-    {
-        if (id == null)
+        // GET: /products/
+        public async Task<IActionResult> Index()
         {
-            return BadRequest();
-        }
-        try
-        {
-            var products = await _productService.GetProductAsync(id.Value);
-            if (products == null)
+            IEnumerable<ProductDto> products;
+            try
             {
-                return NotFound();
+                products = await _productService.GetProductsAsync();
+            }
+            catch
+            {
+                _logger.LogWarning("Exception occurred using products service.");
+                products = new List<ProductDto>();
             }
             return View(products);
         }
-        catch
+
+        // GET: /products/details/{id}
+        public async Task<IActionResult> Details(int id)
         {
-            _logger.LogWarning("Exception occurred using Products service.");
-            return StatusCode(StatusCodes.Status500InternalServerError);
+            if (id == 0)
+            {
+                return BadRequest();
+            }
+            try
+            {
+                var product = await _productService.GetProductAsync(id);
+                if (product == null)
+                {
+                    return NotFound();
+                }
+                return View(product);
+            }
+            catch
+            {
+                _logger.LogWarning("Exception occurred using products service.");
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
-    }
     
 }

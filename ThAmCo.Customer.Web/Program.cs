@@ -1,9 +1,10 @@
 using ThAmCo.Customer.Web.Services;
+// ﻿using Auth0.AspNetCore.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddHttpClient<IProductService, ProductsService>();
+builder.Services.AddHttpClient();
 
 // Add services to the container.
 if (builder.Environment.IsDevelopment())
@@ -12,13 +13,18 @@ if (builder.Environment.IsDevelopment())
 }
 else
 {
-    builder.Services.AddHttpClient<IProductService, ProductsService>();
+    builder.Services.AddHttpClient<ProductsService2>();
+    builder.Services.AddTransient<IProductService, ProductsService2>();
+    // builder.Services.AddHttpClient<IProductService, ProductsService2>();
 }
+
+
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configure the HTTP request pipeline
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -31,7 +37,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthorization();
+// app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
