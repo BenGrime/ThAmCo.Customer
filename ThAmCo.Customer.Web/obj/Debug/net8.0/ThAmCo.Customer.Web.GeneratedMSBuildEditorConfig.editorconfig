@@ -18,6 +18,18 @@ build_property.GenerateRazorMetadataSourceChecksumAttributes =
 build_property.MSBuildProjectDirectory = C:\Users\ben1g\OneDrive - Teesside University\Year 3\DevOps\ICA attempt 5\ThAmCo-Web\ThAmCo.Customer.Web
 build_property._RazorSourceGeneratorDebug = 
 
+[C:/Users/ben1g/OneDrive - Teesside University/Year 3/DevOps/ICA attempt 5/ThAmCo-Web/ThAmCo.Customer.Web/Views/Account/AccessDenied.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxBY2Nlc3NEZW5pZWQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ben1g/OneDrive - Teesside University/Year 3/DevOps/ICA attempt 5/ThAmCo-Web/ThAmCo.Customer.Web/Views/Account/Claims.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxDbGFpbXMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ben1g/OneDrive - Teesside University/Year 3/DevOps/ICA attempt 5/ThAmCo-Web/ThAmCo.Customer.Web/Views/Account/Profile.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxQcm9maWxlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/ben1g/OneDrive - Teesside University/Year 3/DevOps/ICA attempt 5/ThAmCo-Web/ThAmCo.Customer.Web/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 

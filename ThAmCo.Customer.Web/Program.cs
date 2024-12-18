@@ -1,5 +1,6 @@
 using ThAmCo.Customer.Web.Services;
-// ﻿using Auth0.AspNetCore.Authentication;
+﻿using Auth0.AspNetCore.Authentication;
+using ThAmCo.Customer.Web.Services;;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +19,10 @@ else
     // builder.Services.AddHttpClient<IProductService, ProductsService2>();
 }
 
-
+builder.Services.AddAuth0WebAppAuthentication(options => {
+    options.Domain = "ben-grime.uk.auth0.com";
+    options.ClientId = "SvN5f6uE7LLwM8N19NDZgfMLYv3LnKTz";
+});
 
 builder.Services.AddControllersWithViews();
 
@@ -37,7 +41,8 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-// app.UseAuthorization();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",

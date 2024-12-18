@@ -1,8 +1,16 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model ThAmCo.Customer.Web.Services.ProductDto
+@{
+    if (User.Identity.IsAuthenticated)
+    {
+        ViewData["Title"] = $"{User.Identity.Name}'s Home Page";
+    }
+    else
+    {
+        ViewData["Title"] = "Generic Home Page";
+    }
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
+    <h1 class="display-4">@ViewData["Title"]</h1>
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>

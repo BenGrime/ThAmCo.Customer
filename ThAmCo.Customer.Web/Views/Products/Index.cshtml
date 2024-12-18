@@ -23,6 +23,7 @@
     </thead>
     <tbody>
 @foreach (var item in Model) {
+    if(User.Identity.IsAuthenticated){
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Id)
@@ -39,7 +40,33 @@
             <td>
                 <a class="btn btn-primary" asp-controller="Products" asp-action="Details" asp-route-id="@item.Id">Details</a>
             </td>
+            <td>
+                <a class="btn btn-primary" asp-controller="Products" asp-action="Details" asp-route-id="@item.Id">Add to basket</a>
+            </td>
         </tr>
+    }
+    else{
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.price)
+            </td>
+            <td>
+                <a class="btn btn-primary" asp-controller="Products" asp-action="Details" asp-route-id="@item.Id">Details</a>
+            </td>
+            <td>
+                <a class="btn btn-primary" asp-controller="Account" asp-action="Login" asp-route-id="@item.Id">Login to buy</a>
+            </td>
+        </tr>
+    }
 }
     </tbody>
 </table>
