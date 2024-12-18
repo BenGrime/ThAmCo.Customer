@@ -1,5 +1,6 @@
 using System.Net.Http.Headers;
 using System;
+using System.Text.Json;
 
 namespace ThAmCo.Customer.Web.Services
 {
@@ -28,27 +29,90 @@ namespace ThAmCo.Customer.Web.Services
         }
        record TokenDto(string access_token, string token_type, int expires_in);
 
-        public async Task<ProductDto?> GetProductAsync(int id)
+       private const string TokenFilePath = "token_cache.json";
+
+        private async Task SaveTokenAsync(string token, DateTime expiration)
         {
+            var tokenData = new TokenData { AccessToken = token, Expiration = expiration };
+            var json = JsonSerializer.Serialize(tokenData);
+            await File.WriteAllTextAsync(TokenFilePath, json);
+        }
+
+        private async Task<(string? Token, DateTime Expiration)> LoadTokenAsync()
+        {
+            if (!File.Exists(TokenFilePath))
+            {
+                return (null, DateTime.MinValue);
+            }
+
+            var json = await File.ReadAllTextAsync(TokenFilePath);
+            var tokenData = JsonSerializer.Deserialize<TokenData>(json);
+            return (tokenData?.AccessToken, tokenData?.Expiration ?? DateTime.MinValue);
+        }
+
+        private class TokenData
+        {
+            public string? AccessToken { get; set; }
+            public DateTime Expiration { get; set; }
+        }
+
+        private async Task<string> GetAccessTokenAsync()
+        {
+            var (cachedToken, tokenExpiration) = await LoadTokenAsync();
+
+            if (cachedToken != null && tokenExpiration > DateTime.UtcNow)
+            {
+                return cachedToken;
+            }
+
             var tokenClient = _clientFactory.CreateClient();
-            var authBaseAddress = "https://ben-grime.uk.auth0.com";//_configuration["Auth:Authority"];
+            var authBaseAddress = "https://ben-grime.uk.auth0.com"; // _configuration["Auth:Authority"];
             tokenClient.BaseAddress = new Uri(authBaseAddress);
             var tokenParams = new Dictionary<string, string> {
-                 { "grant_type", "client_credentials" },
-                { "client_id","SvN5f6uE7LLwM8N19NDZgfMLYv3LnKTz"},//clientId },
-                { "client_secret","Sr7tJSjLcIDmDIdY1BQgjcsFQ_G4i0dhWioKCs8VUTdUsF9PksPttDyR-FYZqj98"},//clientSecret},
-                { "audience", "https://secureapi.example.com"},//_configuration["Services:Values:AuthAudience"] },
+                { "grant_type", "client_credentials" },
+                { "client_id", "SvN5f6uE7LLwM8N19NDZgfMLYv3LnKTz" }, // clientId },
+                { "client_secret", "Sr7tJSjLcIDmDIdY1BQgjcsFQ_G4i0dhWioKCs8VUTdUsF9PksPttDyR-FYZqj98" }, // clientSecret },
+                { "audience", "https://secureapi.example.com" }, // _configuration["Services:Values:AuthAudience"] },
             };
             var tokenForm = new FormUrlEncodedContent(tokenParams);
             var tokenResponse = await tokenClient.PostAsync("oauth/token", tokenForm);
             tokenResponse.EnsureSuccessStatusCode();
             var tokenInfo = await tokenResponse.Content.ReadFromJsonAsync<TokenDto>();
+
+            var newToken = tokenInfo?.access_token;
+            var newExpiration = DateTime.UtcNow.AddSeconds(tokenInfo?.expires_in ?? 0);
+
+            if (newToken == null)
+            {
+                throw new Exception("Failed to retrieve access token.");
+            }
+            await SaveTokenAsync(newToken, newExpiration);
+
+            return newToken;
+        }
+
+        public async Task<ProductDto?> GetProductAsync(int id)
+        {
+            var tokenClient = _clientFactory.CreateClient();
+            // var authBaseAddress = "https://ben-grime.uk.auth0.com";//_configuration["Auth:Authority"];
+            // tokenClient.BaseAddress = new Uri(authBaseAddress);
+            // var tokenParams = new Dictionary<string, string> {
+            //      { "grant_type", "client_credentials" },
+            //     { "client_id","SvN5f6uE7LLwM8N19NDZgfMLYv3LnKTz"},//clientId },
+            //     { "client_secret","Sr7tJSjLcIDmDIdY1BQgjcsFQ_G4i0dhWioKCs8VUTdUsF9PksPttDyR-FYZqj98"},//clientSecret},
+            //     { "audience", "https://secureapi.example.com"},//_configuration["Services:Values:AuthAudience"] },
+            // };
+            // var tokenForm = new FormUrlEncodedContent(tokenParams);
+            // var tokenResponse = await tokenClient.PostAsync("oauth/token", tokenForm);
+            // tokenResponse.EnsureSuccessStatusCode();
+            // var tokenInfo = await tokenResponse.Content.ReadFromJsonAsync<TokenDto>();
             // FIXME: token should be cached rather than obtained each call
+            var accessToken = await GetAccessTokenAsync();
             var client = _clientFactory.CreateClient();
             var serviceBaseAddress = "https://thamcoproductsapiv1.azurewebsites.net/products";//_configuration["Services:Values:BaseAddress"];
             client.BaseAddress = new Uri(serviceBaseAddress);
             client.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue("Bearer", tokenInfo?.access_token);
+                new AuthenticationHeaderValue("Bearer", accessToken);
             var response = await client.GetAsync("products/"+id);//broken
             response.EnsureSuccessStatusCode();
         
@@ -72,24 +136,25 @@ namespace ThAmCo.Customer.Web.Services
         public async Task<IEnumerable<ProductDto>> GetProductsAsync()
         {
             var tokenClient = _clientFactory.CreateClient();
-            var authBaseAddress = "https://ben-grime.uk.auth0.com";//_configuration["Auth:Authority"];
-            tokenClient.BaseAddress = new Uri(authBaseAddress);
-            var tokenParams = new Dictionary<string, string> {
-                { "grant_type", "client_credentials" },
-                { "client_id","SvN5f6uE7LLwM8N19NDZgfMLYv3LnKTz"},//clientId },
-                { "client_secret","Sr7tJSjLcIDmDIdY1BQgjcsFQ_G4i0dhWioKCs8VUTdUsF9PksPttDyR-FYZqj98"},//clientSecret},
-                { "audience", "https://secureapi.example.com"},//_configuration["Services:Values:AuthAudience"] },
-            };
-            var tokenForm = new FormUrlEncodedContent(tokenParams);
-            var tokenResponse = await tokenClient.PostAsync("oauth/token", tokenForm);
-            tokenResponse.EnsureSuccessStatusCode();
-            var tokenInfo = await tokenResponse.Content.ReadFromJsonAsync<TokenDto>();
+            // var authBaseAddress = "https://ben-grime.uk.auth0.com";//_configuration["Auth:Authority"];
+            // tokenClient.BaseAddress = new Uri(authBaseAddress);
+            // var tokenParams = new Dictionary<string, string> {
+            //     { "grant_type", "client_credentials" },
+            //     { "client_id","SvN5f6uE7LLwM8N19NDZgfMLYv3LnKTz"},//clientId },
+            //     { "client_secret","Sr7tJSjLcIDmDIdY1BQgjcsFQ_G4i0dhWioKCs8VUTdUsF9PksPttDyR-FYZqj98"},//clientSecret},
+            //     { "audience", "https://secureapi.example.com"},//_configuration["Services:Values:AuthAudience"] },
+            // };
+            // var tokenForm = new FormUrlEncodedContent(tokenParams);
+            // var tokenResponse = await tokenClient.PostAsync("oauth/token", tokenForm);
+            // tokenResponse.EnsureSuccessStatusCode();
+            // var tokenInfo = await tokenResponse.Content.ReadFromJsonAsync<TokenDto>();
             // FIXME: token should be cached rather than obtained each call
+            var accessToken = await GetAccessTokenAsync();
             var client = _clientFactory.CreateClient();
             var serviceBaseAddress = "https://thamcoproductsapiv1.azurewebsites.net/products";//_configuration["Services:Values:BaseAddress"];
             client.BaseAddress = new Uri(serviceBaseAddress);
             client.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue("Bearer", tokenInfo?.access_token);
+                new AuthenticationHeaderValue("Bearer", accessToken);//tokenInfo?.access_token
             var response = await client.GetAsync("products");
             response.EnsureSuccessStatusCode();
             if(response.IsSuccessStatusCode)
