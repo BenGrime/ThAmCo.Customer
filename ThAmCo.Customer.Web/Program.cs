@@ -20,8 +20,8 @@ else
 }
 
 builder.Services.AddAuth0WebAppAuthentication(options => {
-    options.Domain = "ben-grime.uk.auth0.com";
-    options.ClientId = "SvN5f6uE7LLwM8N19NDZgfMLYv3LnKTz";
+    options.Domain = builder.Configuration["Auth:Domain"];
+    options.ClientId = builder.Configuration["Auth:ClientId"];
 });
 
 builder.Services.AddControllersWithViews();
