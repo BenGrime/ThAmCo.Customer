@@ -1,6 +1,7 @@
 using System.Net.Http.Headers;
 using System;
 using System.Text.Json;
+using System.Net;
 
 namespace ThAmCo.Customer.Web.Services
 {
@@ -102,7 +103,12 @@ namespace ThAmCo.Customer.Web.Services
             client.BaseAddress = new Uri(serviceBaseAddress);
             client.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Bearer", accessToken);
-            var response = await client.GetAsync("products/"+id);//broken
+            var response = await client.GetAsync("products/"+id);
+
+            if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                return null;
+            }
             response.EnsureSuccessStatusCode();
         
             if (response.IsSuccessStatusCode)
