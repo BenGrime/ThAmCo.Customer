@@ -16,10 +16,10 @@ if (builder.Environment.IsDevelopment())
 }
 else
 {
-      builder.Services.AddHttpClient<ProductsService2>();
-        // .AddPolicyHandler(GetRetryPolicy())
-        // .AddPolicyHandler(GetCircuitBreakerPolicy());
-     builder.Services.AddTransient<IProductService, ProductsService2>();
+    builder.Services.AddHttpClient<ProductsService2>()
+        .AddPolicyHandler(GetRetryPolicy())
+        .AddPolicyHandler(GetCircuitBreakerPolicy());
+    builder.Services.AddTransient<IProductService, ProductsService2>();
 }
 
 builder.Services.AddAuth0WebAppAuthentication(options => {
