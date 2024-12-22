@@ -1,11 +1,13 @@
 using ThAmCo.Customer.Web.Services;
 ﻿using Auth0.AspNetCore.Authentication;
-using ThAmCo.Customer.Web.Services;;
+using Polly;
+using Polly.Extensions.Http;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddHttpClient();
+    
 
 // Add services to the container.
 if (builder.Environment.IsDevelopment())
@@ -14,9 +16,10 @@ if (builder.Environment.IsDevelopment())
 }
 else
 {
-    builder.Services.AddHttpClient<ProductsService2>();
-    builder.Services.AddTransient<IProductService, ProductsService2>();
-    // builder.Services.AddHttpClient<IProductService, ProductsService2>();
+      builder.Services.AddHttpClient<ProductsService2>();
+        // .AddPolicyHandler(GetRetryPolicy())
+        // .AddPolicyHandler(GetCircuitBreakerPolicy());
+     builder.Services.AddTransient<IProductService, ProductsService2>();
 }
 
 builder.Services.AddAuth0WebAppAuthentication(options => {
@@ -49,3 +52,18 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
+IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
+{
+    return HttpPolicyExtensions
+        .HandleTransientHttpError()
+        .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
+        .WaitAndRetryAsync(5, retryAttempt =>
+            TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
+}
+IAsyncPolicy<HttpResponseMessage> GetCircuitBreakerPolicy()
+{
+    return HttpPolicyExtensions
+        .HandleTransientHttpError()
+        .CircuitBreakerAsync(5, TimeSpan.FromSeconds(30));
+}

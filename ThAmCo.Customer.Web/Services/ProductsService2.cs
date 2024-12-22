@@ -96,19 +96,6 @@ namespace ThAmCo.Customer.Web.Services
         public async Task<ProductDto?> GetProductAsync(int id)
         {
             var tokenClient = _clientFactory.CreateClient();
-            // var authBaseAddress = "https://ben-grime.uk.auth0.com";//_configuration["Auth:Authority"];
-            // tokenClient.BaseAddress = new Uri(authBaseAddress);
-            // var tokenParams = new Dictionary<string, string> {
-            //      { "grant_type", "client_credentials" },
-            //     { "client_id","SvN5f6uE7LLwM8N19NDZgfMLYv3LnKTz"},//clientId },
-            //     { "client_secret","Sr7tJSjLcIDmDIdY1BQgjcsFQ_G4i0dhWioKCs8VUTdUsF9PksPttDyR-FYZqj98"},//clientSecret},
-            //     { "audience", "https://secureapi.example.com"},//_configuration["Services:Values:AuthAudience"] },
-            // };
-            // var tokenForm = new FormUrlEncodedContent(tokenParams);
-            // var tokenResponse = await tokenClient.PostAsync("oauth/token", tokenForm);
-            // tokenResponse.EnsureSuccessStatusCode();
-            // var tokenInfo = await tokenResponse.Content.ReadFromJsonAsync<TokenDto>();
-            // FIXME: token should be cached rather than obtained each call
             var accessToken = await GetAccessTokenAsync();
             var client = _clientFactory.CreateClient();
             var serviceBaseAddress = _configuration["Services:Values:BaseAddress"];//_configuration["Services:Values:BaseAddress"];
@@ -138,19 +125,6 @@ namespace ThAmCo.Customer.Web.Services
         public async Task<IEnumerable<ProductDto>> GetProductsAsync()
         {
             var tokenClient = _clientFactory.CreateClient();
-            // var authBaseAddress = "https://ben-grime.uk.auth0.com";//_configuration["Auth:Authority"];
-            // tokenClient.BaseAddress = new Uri(authBaseAddress);
-            // var tokenParams = new Dictionary<string, string> {
-            //     { "grant_type", "client_credentials" },
-            //     { "client_id","SvN5f6uE7LLwM8N19NDZgfMLYv3LnKTz"},//clientId },
-            //     { "client_secret","Sr7tJSjLcIDmDIdY1BQgjcsFQ_G4i0dhWioKCs8VUTdUsF9PksPttDyR-FYZqj98"},//clientSecret},
-            //     { "audience", "https://secureapi.example.com"},//_configuration["Services:Values:AuthAudience"] },
-            // };
-            // var tokenForm = new FormUrlEncodedContent(tokenParams);
-            // var tokenResponse = await tokenClient.PostAsync("oauth/token", tokenForm);
-            // tokenResponse.EnsureSuccessStatusCode();
-            // var tokenInfo = await tokenResponse.Content.ReadFromJsonAsync<TokenDto>();
-            // FIXME: token should be cached rather than obtained each call
             var accessToken = await GetAccessTokenAsync();
             var client = _clientFactory.CreateClient();
             var serviceBaseAddress = _configuration["Services:Values:BaseAddress"];//_configuration["Services:Values:BaseAddress"];
@@ -161,7 +135,7 @@ namespace ThAmCo.Customer.Web.Services
             response.EnsureSuccessStatusCode();
             if(response.IsSuccessStatusCode)
             {
-                var products = await response.Content.ReadFromJsonAsync<ProductDto[]>();
+                var products = await response.Content.ReadFromJsonAsync<IEnumerable<ProductDto>>();
                 if (products == null)
                 {
                     throw new Exception("Failed to deserialize product list.");
